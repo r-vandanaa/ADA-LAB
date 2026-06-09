@@ -1,52 +1,36 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int x[20];
-int n;
+int x[20], n;
 
-int place(int k, int i)
+void queen(int r)
 {
-    int j;
-
-    for(j = 1; j < k; j++)
+    for(int c = 1; c <= n; c++)
     {
-        if((x[j] == i) || (abs(k - j) == abs(i - x[j])))
-            return 0;
-    }
+        int ok = 1;
 
-    return 1;
-}
-
-void nqueens(int k)
-{
-    int i;
-
-    for(i = 1; i <= n; i++)
-    {
-        if(place(k, i))
+        for(int i = 1; i < r; i++)
         {
-            x[k] = i;
-
-            if(k == n)
+            if(x[i] == c || abs(x[i] - c) == abs(i - r))
             {
-                int j;
+                ok = 0;
+                break;
+            }
+        }
 
-                printf("\nSolution:\n");
+        if(ok)
+        {
+            x[r] = c;
 
-                for(j = 1; j <= n; j++)
-                {
-                    printf("Row %d -> Column %d\n", j, x[j]);
-                }
-
+            if(r == n)
+            {
                 printf("\nChess Board:\n");
 
-                int r, c;
-
-                for(r = 1; r <= n; r++)
+                for(int i = 1; i <= n; i++)
                 {
-                    for(c = 1; c <= n; c++)
+                    for(int j = 1; j <= n; j++)
                     {
-                        if(x[r] == c)
+                        if(x[i] == j)
                             printf(" Q ");
                         else
                             printf(" . ");
@@ -58,7 +42,7 @@ void nqueens(int k)
             }
             else
             {
-                nqueens(k + 1);
+                queen(r + 1);
             }
         }
     }
@@ -66,10 +50,10 @@ void nqueens(int k)
 
 int main()
 {
-    printf("Enter number of queens: ");
+    printf("Enter n: ");
     scanf("%d", &n);
 
-    nqueens(1);
+    queen(1);
 
     return 0;
 }
