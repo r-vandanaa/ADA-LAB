@@ -1,76 +1,54 @@
 #include <stdio.h>
 
-void heapBottomUp(int H[], int n) {
-    int i, k, v, j;
+void heapify(int arr[], int n, int i) {
+    int largest = i;     
+    int left = 2*i + 1;   
+    int right = 2*i + 2;   
 
-    for (i = n / 2; i >= 1; i--) {
-        k = i;
-        v = H[k];
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
 
-        while (2 * k <= n) {
-            j = 2 * k;
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
 
-            if (j < n && H[j] < H[j + 1])
-                j++;
+    if (largest != i) {
+        int temp = arr[i];
+        arr[i] = arr[largest];
+        arr[largest] = temp;
 
-            if (v >= H[j])
-                break;
-
-            H[k] = H[j];
-            k = j;
-        }
-
-        H[k] = v;
+        heapify(arr, n, largest);
     }
 }
 
-void heapSort(int H[], int n) {
-    int i, temp, k, v, j;
+void heapSort(int arr[], int n) {
 
-    heapBottomUp(H, n);
+    for (int i = n/2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
 
-    for (i = n; i >= 2; i--) {
-        temp = H[1];
-        H[1] = H[i];
-        H[i] = temp;
+    for (int i = n-1; i > 0; i--) {
+        int temp = arr[0];
+        arr[0] = arr[i];
+        arr[i] = temp;
 
-        k = 1;
-        v = H[k];
-
-        while (2 * k <= i - 1) {
-            j = 2 * k;
-
-            if (j < i - 1 && H[j] < H[j + 1])
-                j++;
-
-            if (v >= H[j])
-                break;
-
-            H[k] = H[j];
-            k = j;
-        }
-
-        H[k] = v;
+        heapify(arr, i, 0);
     }
 }
 
 int main() {
-    int n, i;
-
+    int n;
     printf("Enter number of elements: ");
     scanf("%d", &n);
 
-    int H[n + 1];
-
+    int arr[n];
     printf("Enter elements:\n");
-    for (i = 1; i <= n; i++)
-        scanf("%d", &H[i]);
+    for (int i = 0; i < n; i++)
+        scanf("%d", &arr[i]);
 
-    heapSort(H, n);
+    heapSort(arr, n);
 
     printf("Sorted array:\n");
-    for (i = 1; i <= n; i++)
-        printf("%d ", H[i]);
+    for (int i = 0; i < n; i++)
+        printf("%d ", arr[i]);
 
     return 0;
 }
