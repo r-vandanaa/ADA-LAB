@@ -1,68 +1,58 @@
 #include <stdio.h>
-#define INT_MAX 10000
 #define MAX 100
+#define INF 9999
 
-int minDistance(int dist[], int visited[], int n) {
-    int min = INT_MAX, min_index = -1;
+void dijkstra(int cost[MAX][MAX], int n, int src) {
+    int dist[MAX], visited[MAX];
+
     for (int i = 0; i < n; i++) {
-        if (!visited[i] && dist[i] < min) {
-            min = dist[i];
-            min_index = i;
-        }
-    }
-    return min_index;
-}
-
-void dijkstras(int cost[MAX][MAX], int n, int s){
-    int dist[MAX], visited[MAX], parent[MAX];
-
-    for(int i = 0; i < n; i++){
-        dist[i] = INT_MAX;
+        dist[i] = INF;
         visited[i] = 0;
-        parent[i] = -1;
     }
+    dist[src] = 0;
+    for (int count = 0; count < n - 1; count++) {
+        int u = -1, min = INF;
 
-    dist[s] = 0;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i] && dist[i] < min) {
+                min = dist[i];
+                u = i;
+            }
+        }
 
-    for(int i = 0; i < n; i++){
-        int u = minDistance(dist, visited, n);
-        if(u == -1) break;
-
+        if (u == -1) break; 
         visited[u] = 1;
 
-        for(int v = 0; v < n; v++){
-            if (!visited[v] && cost[u][v] != INT_MAX &&
-                dist[u] != INT_MAX &&
-                dist[u] + cost[u][v] < dist[v]) {
-
+        for (int v = 0; v < n; v++) {
+            if (!visited[v] && cost[u][v] != INF && dist[u] + cost[u][v] < dist[v]) {
                 dist[v] = dist[u] + cost[u][v];
-                parent[v] = u;
             }
         }
     }
 
-    printf("Vertex\tDistance (from given source %d) \n",s);
+    printf("Vertex\tDistance from source %d\n", src);
     for (int i = 0; i < n; i++) {
         printf("%d\t%d\n", i, dist[i]);
     }
 }
 
-int main(){
+int main() {
     int n;
+    int cost[MAX][MAX];
+
     printf("Enter number of vertices: ");
     scanf("%d", &n);
 
-    int cost[MAX][MAX];
-
     printf("Enter adjacency matrix:\n");
-    for(int i = 0; i < n; i++){
-        for(int j = 0; j < n; j++){
+    for (int i = 0; i < n; i++) {
+        for (int j = 0; j < n; j++) {
             scanf("%d", &cost[i][j]);
-            if(cost[i][j] == 0 && i != j){
-                cost[i][j] = INT_MAX;
+            if (i != j && cost[i][j] == 0) {
+                cost[i][j] = INF; 
             }
         }
     }
 
-    dijkstras(cost, n, 0);
+    dijkstra(cost, n, 0); // source = 0
+    return 0;
 }
