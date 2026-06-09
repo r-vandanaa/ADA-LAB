@@ -1,70 +1,42 @@
 #include <stdio.h>
+#define LEFT -1
+#define RIGHT 1
 
-int a[10], dir[10];
-
-void printPermutation(int n)
-{
-    int i;
-
-    for(i = 0; i < n; i++)
+int a[20], dir[20];
+void printPermutation(int n) {
+    for (int i = 0; i < n; i++)
         printf("%d ", a[i]);
-
     printf("\n");
 }
 
-int mobile(int n)
-{
-    int i, mobile_prev = 0, mobile_index = -1;
-
-    for(i = 0; i < n; i++)
-    {
-        if(dir[a[i]-1] == -1 && i != 0)
-        {
-            if(a[i] > a[i-1] && a[i] > mobile_prev)
-            {
-                mobile_prev = a[i];
-                mobile_index = i;
-            }
+int getMobile(int n) {
+    int mobile = -1, index = -1;
+    for (int i = 0; i < n; i++) {
+        if (dir[a[i]] == LEFT && i > 0 && a[i] > a[i-1] && a[i] > mobile) {
+            mobile = a[i];
+            index = i;
         }
-
-        if(dir[a[i]-1] == 1 && i != n-1)
-        {
-            if(a[i] > a[i+1] && a[i] > mobile_prev)
-            {
-                mobile_prev = a[i];
-                mobile_index = i;
-            }
+        if (dir[a[i]] == RIGHT && i < n-1 && a[i] > a[i+1] && a[i] > mobile) {
+            mobile = a[i];
+            index = i;
         }
     }
-
-    return mobile_index;
+    return index;
 }
 
-void johnsonTrotter(int n)
-{
-    int i;
-
-    for(i = 0; i < n; i++)
-    {
-        a[i] = i + 1;
-        dir[i] = -1;
+void johnsonTrotter(int n) {
+    for (int i = 0; i < n; i++) {
+        a[i] = i+1;
+        dir[a[i]] = LEFT;
     }
 
     printPermutation(n);
 
-    while(1)
-    {
-        int m = mobile(n);
+    while (1) {
+        int m = getMobile(n);
+        if (m == -1) break;
 
-        if(m == -1)
-            break;
-
-        int swapIndex;
-
-        if(dir[a[m]-1] == -1)
-            swapIndex = m - 1;
-        else
-            swapIndex = m + 1;
+        int swapIndex = (dir[a[m]] == LEFT) ? m-1 : m+1;
 
         int temp = a[m];
         a[m] = a[swapIndex];
@@ -72,24 +44,18 @@ void johnsonTrotter(int n)
 
         m = swapIndex;
 
-        for(i = 0; i < n; i++)
-        {
-            if(a[i] > a[m])
-                dir[a[i]-1] *= -1;
+        for (int i = 0; i < n; i++) {
+            if (a[i] > a[m]) dir[a[i]] *= -1;
         }
 
         printPermutation(n);
     }
 }
 
-int main()
-{
+int main() {
     int n;
-
-    printf("Enter value of n: ");
+    printf("Enter n: ");
     scanf("%d", &n);
-
     johnsonTrotter(n);
-
     return 0;
 }
